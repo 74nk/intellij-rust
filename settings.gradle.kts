@@ -14,5 +14,6 @@ include(
     "grazie",
     "js",
     "ml-completion",
+    "wsl",
     "intellij-toml"
 )

@@ -256,6 +256,7 @@ project(":plugin") {
         implementation(project(":grazie"))
         implementation(project(":js"))
         implementation(project(":ml-completion"))
+        implementation(project(":wsl"))
     }
 
     tasks {
@@ -505,6 +506,15 @@ project(":ml-completion") {
     }
     dependencies {
         implementation("org.jetbrains.intellij.deps.completion:completion-ranking-rust:0.0.4")
+        implementation(project(":"))
+        implementation(project(":common"))
+        testImplementation(project(":", "testOutput"))
+        testImplementation(project(":common", "testOutput"))
+    }
+}
+
+project(":wsl") {
+    dependencies {
         implementation(project(":"))
         implementation(project(":common"))
         testImplementation(project(":", "testOutput"))

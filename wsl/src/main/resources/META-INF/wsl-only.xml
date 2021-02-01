@@ -1,0 +1,8 @@
+<idea-plugin>
+    <extensions defaultExtensionNs="org.rust">
+        <toolchainProvider implementation="org.rust.wsl.RsWslToolchainProvider"/>
+        <toolchainFlavor implementation="org.rust.wsl.flavors.RsWslRustupToolchainFlavor"/>
+        <toolchainFlavor implementation="org.rust.wsl.flavors.RsWslUnixToolchainFlavor"/>
+        <toolchainFlavor implementation="org.rust.wsl.flavors.RsWslSysPathToolchainFlavor"/>
+    </extensions>
+</idea-plugin>

@@ -27,9 +27,10 @@ class Rustc(toolchain: RsToolchain) : RustupComponent(NAME, toolchain) {
         if (!isUnitTestMode) {
             checkIsBackgroundThread()
         }
-        val lines = createBaseCommandLine("--version", "--verbose", workingDirectory = workingDirectory)
-            .execute()
-            ?.stdoutLines
+        val lines = createBaseCommandLine(
+            "--version", "--verbose",
+            workingDirectory = workingDirectory
+        ).execute()?.stdoutLines
         return lines?.let { parseRustcVersion(it) }
     }
 
@@ -51,7 +52,9 @@ class Rustc(toolchain: RsToolchain) : RustupComponent(NAME, toolchain) {
     }
 
     fun getStdlibFromSysroot(projectDirectory: Path): VirtualFile? {
-        val stdlibPath = getStdlibPathFromSysroot(projectDirectory) ?: return null
+        val stdlibPath = getStdlibPathFromSysroot(projectDirectory)
+            ?.let { toolchain.toLocalPath(it) } // TODO: use UNC path
+            ?: return null
         val fs = LocalFileSystem.getInstance()
         return fs.refreshAndFindFileByPath(stdlibPath)
     }

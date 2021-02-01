@@ -34,7 +34,7 @@ import org.rust.cargo.runconfig.command.CargoCommandConfiguration
 import org.rust.cargo.toolchain.CargoCommandLine
 import org.rust.cargo.toolchain.impl.CargoMetadata
 import org.rust.cargo.toolchain.tools.Cargo.Companion.getCargoCommonPatch
-import org.rust.cargo.toolchain.tools.RsTool.Companion.createGeneralCommandLine
+import org.rust.cargo.toolchain.tools.cargo
 import org.rust.cargo.util.CargoArgsParser.Companion.parseArgs
 import org.rust.openapiext.JsonUtils.tryParseJsonObject
 import org.rust.openapiext.saveAllDocuments
@@ -74,14 +74,15 @@ abstract class RsAsyncRunner(
 
         val getRunCommand = { executablePath: Path ->
             with(commandLine) {
-                createGeneralCommandLine(
+                state.toolchain.createGeneralCommandLine(
                     executablePath,
                     workingDirectory,
                     redirectInputFrom,
                     backtraceMode,
                     environmentVariables,
                     executableArguments,
-                    emulateTerminal
+                    emulateTerminal,
+                    patchToRemote = false
                 )
             }
         }
@@ -113,7 +114,7 @@ abstract class RsAsyncRunner(
         manager.patchCommandLine(runConfiguration, environment, cmd, context)
         manager.patchCommandLineState(runConfiguration, environment, state, context)
 
-        val handler = RsKillableColoredProcessHandler(cmd)
+        val handler = state.toolchain.startProcess(cmd)
         ProcessTerminatedListener.attach(handler) // shows exit code upon termination
 
         manager.attachExtensionsToProcess(runConfiguration, handler, environment, context)
@@ -143,10 +144,11 @@ abstract class RsAsyncRunner(
         isTestBuild: Boolean
     ): Promise<Binary?> {
         val promise = AsyncPromise<Binary?>()
-        val cargo = state.cargo()
+        val toolchain = state.toolchain
+        val cargo = toolchain.cargo()
 
         val processForUserOutput = ProcessOutput()
-        val processForUser = RsKillableColoredProcessHandler(cargo.toColoredCommandLine(project, command))
+        val processForUser = toolchain.startProcess(cargo.toColoredCommandLine(project, command))
 
         processForUser.addProcessListener(CapturingProcessAdapter(processForUserOutput))
 

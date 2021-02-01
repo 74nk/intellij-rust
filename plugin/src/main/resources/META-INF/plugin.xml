@@ -17,6 +17,7 @@
     <depends>org.toml.lang</depends>
 
     <xi:include href="/META-INF/rust-core.xml" xpointer="xpointer(/idea-plugin/*)"/>
+    <xi:include href="/META-INF/wsl-only.xml" xpointer="xpointer(/idea-plugin/*)"/>
 
     <depends optional="true" config-file="idea-only.xml">com.intellij.modules.java</depends>
     <depends optional="true" config-file="clion-only.xml">com.intellij.modules.clion</depends>
